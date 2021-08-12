@@ -23,7 +23,7 @@ const options = {
     }
   ],
 
-  headless: false,
+  headless: true,
   devtools: true,
   slowMo: 0
 }
