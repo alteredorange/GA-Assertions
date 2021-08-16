@@ -1,6 +1,6 @@
 import { completedTests, allEvents } from "./setup.js"
 import chalk from "chalk"
-import { gt_product_detail_view } from "./dictionary.js"
+import { dictionary } from "./dictionary.js"
 const failed = (element) => element.result == "FAIL"
 const passed = (element) => element.result == "PASS"
 
@@ -154,8 +154,10 @@ export const DLCheckHelper = async (page, name, key, value) => {
       }
     }
     let eventDetails
+
     const DLCheck = async (attempt = 1) => {
       let pageDataLayer = await page.evaluate(() => dataLayer)
+      //  const dataLayer = await page.evaluate("typeof dataLayer")
       console.log(
         "$ - DL Check (" + key + ": " + value + ") Attempt: " + attempt
       )

@@ -1,20 +1,22 @@
-import { initialize, completedTests, allEvents } from "../helpers/setup.js"
-import { parseResults } from "../helpers/helpers.js"
-import { totalEvents } from "../helpers/totalEvents.js"
+import { initialize, completedTests, allEvents } from '../helpers/setup.js'
+import { parseResults } from '../helpers/helpers.js'
+import { totalEvents } from '../helpers/totalEvents.js'
 
-const startUrl = "https://stopandshop.com"
+const startUrl = 'https://stopandshop.com'
 
 export const [page, browser] = await initialize(startUrl)
-import { DLCheck, click } from "../helpers/SSHelper.js"
+import { DLCheck, click } from '../helpers/SSHelper.js'
 
 //* ======================================================================== *//
 //*                               gt-view-cart                               *//
 //* ======================================================================== *//
-// //open empty shopping cart
-// await click(".cart-button-content")
-// await DLCheck("event", "gt-view-cart")
-// //close empty shopping cart
-// await click("div.modal_footer > div > div > footer > button")
+const gtViewCart = async () => {
+  //open empty shopping cart
+  await click('.cart-button-content')
+  await DLCheck('event', 'gt-view-cart')
+  //close empty shopping cart
+  await click('div.modal_footer > div > div > footer > button')
+}
 // //* ======================================================================== *//
 // //*                              gt-add-to-cart                              *//
 // //* ======================================================================== *//
@@ -38,11 +40,13 @@ import { DLCheck, click } from "../helpers/SSHelper.js"
 //* ======================================================================== *//
 //*                          gt-product-detail-view                          *//
 //* ======================================================================== *//
-//open a regular product
-await click("div.product-tile_content")
-await DLCheck("event", "gt-product-detail-view")
-//close the item detail's modal
-await click(".modal_body > .modal_header > .modal_close > .modal_close-icon")
+const gtProductDetailView = async () => {
+  //open a regular product
+  await click('div.product-tile_content')
+  await DLCheck('event', 'gt-product-detail-view')
+  //close the item detail's modal
+  await click('.modal_body > .modal_header > .modal_close > .modal_close-icon')
+}
 //* ======================================================================== *//
 //*                            gt-promotion-click                            *//
 //* ======================================================================== *//
@@ -56,19 +60,23 @@ await click(".modal_body > .modal_header > .modal_close > .modal_close-icon")
 
 // completedTests.push({ name: "failed-Test", result: "FAIL" })
 
+await Promise.allSettled([gtViewCart(), gtProductDetailView()]).then(
+  console.log
+)
+
 let uniqueEvents = [...new Set(allEvents)]
-console.log(uniqueEvents)
+// console.log(uniqueEvents)
 let totalCount = totalEvents.length
 let eventsCovered = 0
-uniqueEvents.map((value) => {
+uniqueEvents.map(value => {
   if (totalEvents.includes(value)) {
     eventsCovered += 1
   }
 })
 
-let coverage = eventsCovered / totalCount
-console.log(eventsCovered + " / " + totalCount)
-console.log("COVERAGE: " + coverage + "%")
+// let coverage = eventsCovered / totalCount
+// console.log(eventsCovered + ' / ' + totalCount)
+// console.log('COVERAGE: ' + coverage + '%')
 
 parseResults(completedTests)
 

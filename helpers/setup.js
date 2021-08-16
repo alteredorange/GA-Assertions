@@ -1,8 +1,8 @@
-import puppeteer from "puppeteer-extra"
+import puppeteer from 'puppeteer-extra'
 // const chalk = require("chalk")
-import chalk from "chalk"
+import chalk from 'chalk'
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
-import StealthPlugin from "puppeteer-extra-plugin-stealth"
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 
 puppeteer.use(StealthPlugin())
 
@@ -12,23 +12,23 @@ export const allEvents = []
 const options = {
   trackRequests: [
     {
-      name: "GoogleAnalytics",
-      url: "www.google-analytics.com/collect",
+      name: 'GoogleAnalytics',
+      url: 'www.google-analytics.com/collect',
       abortRequest: true
     },
     {
-      name: "Facebook",
-      url: "www.facebook.com/tr",
+      name: 'Facebook',
+      url: 'www.facebook.com/tr',
       abortRequest: true
     }
   ],
 
-  headless: true,
+  headless: false,
   devtools: true,
   slowMo: 0
 }
 
-export const initialize = async (startUrl) => {
+export const initialize = async startUrl => {
   const browser = await puppeteer.launch({
     headless: options.headless,
     // devtools: options.devtools,
@@ -63,13 +63,13 @@ export const initialize = async (startUrl) => {
     await page.setRequestInterception(true)
 
     // Create an empty array for each domain we want to track to push to
-    options.trackRequests.forEach((tracker) => {
+    options.trackRequests.forEach(tracker => {
       networkRequests[tracker.name] = []
     })
 
-    const requestUrlParamsToJSON = (requestURL) => {
+    const requestUrlParamsToJSON = requestURL => {
       // Split request parameters and store as key-value object for easy access
-      let params = requestURL.split("?")[1]
+      let params = requestURL.split('?')[1]
       return JSON.parse(
         '{"' +
           decodeURI(params)
@@ -80,11 +80,11 @@ export const initialize = async (startUrl) => {
       )
     }
 
-    page.on("request", (req) => {
+    page.on('request', req => {
       // Determine what to do with every request and create an object with the request params when needed
       const requestURL = req.url()
       let abortRequest = false
-      options.trackRequests.forEach((tracker) => {
+      options.trackRequests.forEach(tracker => {
         if (requestURL.indexOf(tracker.url) > -1) {
           networkRequests[tracker.name].push(requestUrlParamsToJSON(requestURL))
           if (tracker.abortRequest) {
@@ -96,24 +96,24 @@ export const initialize = async (startUrl) => {
     })
   }
   try {
-    await page.goto(startUrl, { waitUntil: "networkidle2", timeout: 11000 })
+    await page.goto(startUrl, { waitUntil: 'networkidle2', timeout: 11000 })
   } catch (e) {
-    if (e?.name === "TimeoutError") {
-      console.log("page failed to load, retrying...")
-      await page.goto(startUrl, { waitUntil: "networkidle2", timeout: 11000 })
+    if (e?.name === 'TimeoutError') {
+      console.log('page failed to load, retrying...')
+      await page.goto(startUrl, { waitUntil: 'networkidle2', timeout: 11000 })
     } else {
-      console.log("navigation failed.")
+      console.log('navigation failed.')
     }
   }
-  console.log("page loaded!")
+  console.log('page loaded!')
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: "*initialLoad.png" })
+  await page.screenshot({ path: '*initialLoad.png' })
   await page.mouse.wheel({ deltaY: 2000 })
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: "*afterScroll.png" })
+  await page.screenshot({ path: '*afterScroll.png' })
   await page.mouse.wheel({ deltaY: 2000 })
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: "*afterScroll2.png" })
+  await page.screenshot({ path: '*afterScroll2.png' })
   return [page, browser]
   //   await browser.close()
   //   return completedTests

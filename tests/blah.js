@@ -173,4 +173,14 @@ function findNestedObject(obj, key, value) {
 // let eventIndex = await pageDataLayer.findIndex((e) => e.event == value)
 // eventDetails = await pageDataLayer[eventIndex]
 
-console.log(findNestedObject(DL, dictionary[0][0].key, dictionary[0][0].value))
+//I can find the object in the DL, and then run tests on it. Now I have to check each Dicitonary value
+
+dictionary.forEach((tag) => {
+  if (!tag[0].key) return
+  console.log(tag[0].key)
+
+  let res = findNestedObject(DL, tag[0].key, tag[0].value)
+  console.log("RES")
+  console.log(res)
+})
+// console.log(findNestedObject(DL, dictionary[0][0].key, dictionary[0][0].value))

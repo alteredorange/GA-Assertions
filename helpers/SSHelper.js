@@ -1,9 +1,9 @@
 // import { ulid } from "ulid"
 
-import { page, browser } from "../tests/cleansands.js"
-import { clickHelper, DLCheckHelper } from "./helpers.js"
+import { page, browser } from '../tests/cleansands.js'
+import { clickHelper, DLCheckHelper } from './helpers.js'
 
-export const click = async (element) => {
+export const click = async element => {
   let res = await clickHelper(page, element)
   return res
 }
