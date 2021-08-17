@@ -190,7 +190,7 @@ dictionary.forEach(tag => {
   console.log(res)
 })
 
-import * as tests from './justTests.js'
+import * as tests from './SS-Tests.js/index.js'
 
 // console.log(tests.gtAddToCart())
 // let thing = [...tests]

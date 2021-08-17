@@ -72,6 +72,18 @@ export const clickHelper = async (page, element) => {
   return true
 }
 
+export const delay = async milisecs => {
+  return new Promise(function (resolve, reject) {
+    setTimeout(resolve, milisecs)
+  })
+}
+
+export async function asyncForEach (array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
+
 export const DLCheckHelper = async (page, key, value, name) => {
   let DLCheckFinished = false
   if (!name) name = value

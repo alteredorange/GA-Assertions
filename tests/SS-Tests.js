@@ -23,9 +23,9 @@ export const gtViewCart = async () => {
   await page.close()
   return `gtViewCart Test Complete`
 }
-// //* ======================================================================== *//
-// //*                              gt-add-to-cart                              *//
-// //* ======================================================================== *//
+//* ======================================================================== *//
+//*                              gt-add-to-cart                              *//
+//* ======================================================================== *//
 export const gtAddToCart = async () => {
   const page = await newPage(browser, startUrl)
   //add an item to cart
@@ -34,9 +34,9 @@ export const gtAddToCart = async () => {
   await page.close()
 }
 
-// //* ======================================================================== *//
-// //*                            gt-remove-from-cart                           *//
-// //* ======================================================================== *//
+//* ======================================================================== *//
+//*                            gt-remove-from-cart                           *//
+//* ======================================================================== *//
 export const gtRemoveFromCart = async () => {
   const page = await newPage(browser, startUrl)
   //add an item to cart
@@ -48,9 +48,9 @@ export const gtRemoveFromCart = async () => {
   await page.close()
   return `gtRemoveFromCart Test Complete`
 }
-// //* ======================================================================== *//
-// //*                          gt-weekly-special-event                         *//
-// //* ======================================================================== *//
+//* ======================================================================== *//
+//*                          gt-weekly-special-event                         *//
+//* ======================================================================== *//
 export const gtWeeklySpecialEvent = async () => {
   const page = await newPage(browser, startUrl)
   //click the first title from this week's ad section
