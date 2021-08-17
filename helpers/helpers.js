@@ -1,24 +1,24 @@
-import { completedTests, allEvents } from "./setup.js"
-import chalk from "chalk"
-import { dictionary } from "./dictionary.js"
-const failed = (element) => element.result == "FAIL"
-const passed = (element) => element.result == "PASS"
+import { completedTests, allEvents } from './setup.js'
+import chalk from 'chalk'
+import { dictionary } from './dictionary.js'
+const failed = element => element.result == 'FAIL'
+const passed = element => element.result == 'PASS'
 
 let waitFor = (conditionFunction, time = 100) => {
-  const poll = (resolve) => {
+  const poll = resolve => {
     if (conditionFunction()) resolve()
-    else setTimeout((_) => poll(resolve), time)
+    else setTimeout(_ => poll(resolve), time)
   }
   return new Promise(poll)
 }
 
-const isObject = (x) => Object(x) === x
+const isObject = x => Object(x) === x
 
 const isArray = Array.isArray
 
 const mut = (o, [k, v]) => ((o[k] = v), o)
 
-const diff1 = (left = {}, right = {}, rel = "left") =>
+const diff1 = (left = {}, right = {}, rel = 'left') =>
   Object.entries(left)
     .map(([k, v]) =>
       isObject(v) && isObject(right[k])
@@ -38,15 +38,15 @@ const merge = (left = {}, right = {}) =>
     .reduce(mut, left)
 
 const diff = (x = {}, y = {}) =>
-  merge(diff1(x, y, "left"), diff1(y, x, "right"))
+  merge(diff1(x, y, 'left'), diff1(y, x, 'right'))
 
 export const testName = new URL(import.meta.url).pathname
-  .split("/")
+  .split('/')
   .pop()
-  .replace(/\.[^/.]+$/, "")
+  .replace(/\.[^/.]+$/, '')
 
 export const clickHelper = async (page, element) => {
-  console.log("+ - Clicking " + element)
+  console.log('+ - Clicking ' + element)
   try {
     await page.waitForSelector(element)
   } catch (e) {
@@ -54,7 +54,7 @@ export const clickHelper = async (page, element) => {
     //   path:
     //     "pics/errors/" + Date.now().toString().slice(-9) + "-failedClick.png"
     // })
-    console.log("Click failed, could not find " + element)
+    console.log('Click failed, could not find ' + element)
     return false
   }
 
@@ -72,8 +72,9 @@ export const clickHelper = async (page, element) => {
   return true
 }
 
-export const DLCheckHelper = async (page, name, key, value) => {
+export const DLCheckHelper = async (page, key, value, name) => {
   let DLCheckFinished = false
+  if (!name) name = value
   try {
     // Get the current dataLayer
     const pageDataLayer = await page.evaluate(() => dataLayer)
@@ -118,7 +119,7 @@ export const DLCheckHelper = async (page, name, key, value) => {
       const hasOwn = Object.prototype.hasOwnProperty
 
       // Check that the keys match and recurse into nested objects as necessary
-      return o1keys.every((key) => {
+      return o1keys.every(key => {
         if (!hasOwn.call(o2, key)) {
           // Different keys
           return false
@@ -128,13 +129,13 @@ export const DLCheckHelper = async (page, name, key, value) => {
         const v2 = o2[key]
         const t1 = typeof v1
         const t2 = typeof v2
-        if (t1 === "object") {
-          if (t2 === "object" && !deepSameKeys(v1, v2)) {
+        if (t1 === 'object') {
+          if (t2 === 'object' && !deepSameKeys(v1, v2)) {
             return false
           }
         }
-        if (t2 === "object") {
-          if (t1 === "object" && !deepSameKeys(v1, v2)) {
+        if (t2 === 'object') {
+          if (t1 === 'object' && !deepSameKeys(v1, v2)) {
             return false
           }
         }
@@ -159,27 +160,27 @@ export const DLCheckHelper = async (page, name, key, value) => {
       let pageDataLayer = await page.evaluate(() => dataLayer)
       //  const dataLayer = await page.evaluate("typeof dataLayer")
       console.log(
-        "$ - DL Check (" + key + ": " + value + ") Attempt: " + attempt
+        '$ - DL Check (' + key + ': ' + value + ') Attempt: ' + attempt
       )
       if (attempt > 3) {
         DLCheckFinished = true
         return completedTests.push({
           name: name,
-          result: "FAIL",
-          reason: "Could not find matching key:value pair"
+          result: 'FAIL',
+          reason: 'Could not find matching key:value pair'
         })
       }
 
       let dupEvents = []
       // let eventDetails = []
 
-      await pageDataLayer?.map((e) => {
+      await pageDataLayer?.map(e => {
         if (e?.event !== undefined) {
           allEvents.push(e.event)
         }
       })
 
-      let eventIndex = await pageDataLayer.findIndex((e) => e.event == value)
+      let eventIndex = await pageDataLayer.findIndex(e => e.event == value)
       eventDetails = await pageDataLayer[eventIndex]
       // console.log(eventDetails)
       // console.log(pageDataLayer)
@@ -188,12 +189,12 @@ export const DLCheckHelper = async (page, name, key, value) => {
       // console.log(eventDetails)
       // console.log(uniqueEvents)
 
-      let result = await pageDataLayer?.find((x) => x[key] == value)
+      let result = await pageDataLayer?.find(x => x[key] == value)
       if (!result) return setTimeout(() => DLCheck(attempt + 1), 1000)
       DLCheckFinished = true
       return completedTests.push({
         name: name,
-        result: "PASS"
+        result: 'PASS'
       })
     }
     const get = (path, object) =>
@@ -202,12 +203,12 @@ export const DLCheckHelper = async (page, name, key, value) => {
     await DLCheck()
     await waitFor(() => DLCheckFinished === true)
     console.log(eventDetails)
-    if (eventDetails.event == "gt-product-detail-view") {
-      console.log("KEY CHECK: ")
+    if (eventDetails.event == 'gt-product-detail-view') {
+      console.log('KEY CHECK: ')
       console.log(deepSameKeys(eventDetails, gt_product_detail_view[1]))
-      console.log("DIF CHECK: ")
+      console.log('DIF CHECK: ')
       console.log(diff(gt_product_detail_view[1], eventDetails))
-      console.log("REGEX TEST: ")
+      console.log('REGEX TEST: ')
 
       // let blah = get(eventDetails)
       // console.log(blah)
@@ -215,12 +216,12 @@ export const DLCheckHelper = async (page, name, key, value) => {
       //    (e) => e.event == value
       //  )
       // console.log(gt_product_detail_view[0])
-      gt_product_detail_view[0].forEach((e) => {
-        console.log("THING: ")
+      gt_product_detail_view[0].forEach(e => {
+        console.log('THING: ')
         let thing = get(e.path, eventDetails)
         console.log(thing)
-        if (e.regex.test(thing)) return console.log("Regex test passed!")
-        console.log("Regex failed: " + e.error)
+        if (e.regex.test(thing)) return console.log('Regex test passed!')
+        console.log('Regex failed: ' + e.error)
         // console.log(e.regex.test(thing))
         // console.log(e.path)
         // console.log(eventDetails[e.path[0]][e.path[1]])
@@ -258,28 +259,28 @@ export const DLCheckHelper = async (page, name, key, value) => {
     //         }
     //       }`)
   } catch (e) {
-    await page.screenshot({ path: "DLCheckFail.png" })
+    await page.screenshot({ path: 'DLCheckFail.png' })
     console.error(e)
   }
   return completedTests
 }
 
-export const parseResults = (results) => {
-  console.log("")
+export const parseResults = results => {
+  console.log('')
   if (results.every(failed)) {
-    console.log(chalk.bold.red.underline("ALL Tests Failed!!!".toUpperCase()))
+    console.log(chalk.bold.red.underline('ALL Tests Failed!!!'.toUpperCase()))
     console.log(results)
   } else if (results.some(failed)) {
-    console.log(chalk.bold.green.underline("Some Tests Passed:".toUpperCase()))
+    console.log(chalk.bold.green.underline('Some Tests Passed:'.toUpperCase()))
     let passedTests = results.filter(passed)
     console.log(passedTests)
-    console.log("")
-    console.log(chalk.bold.red.underline("Some Tests Failed:".toUpperCase()))
+    console.log('')
+    console.log(chalk.bold.red.underline('Some Tests Failed:'.toUpperCase()))
     let failedTests = results.filter(failed)
     console.log(failedTests)
   } else {
-    console.log(chalk.bold.green("All Tests Passed!".toUpperCase()))
+    console.log(chalk.bold.green('All Tests Passed!'.toUpperCase()))
     console.log(results)
   }
-  console.log("")
+  console.log('')
 }
