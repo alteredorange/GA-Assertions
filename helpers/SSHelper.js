@@ -1,6 +1,6 @@
 // import { ulid } from "ulid"
 
-import { page, browser } from '../tests/cleansands.js'
+import { page, browser } from '../tests/SS-Runner.js'
 import { clickHelper, DLCheckHelper } from './helpers.js'
 
 export const click = async element => {
