@@ -28,6 +28,7 @@ await asyncForEach(Object.values(tests), async (test, index, array) => {
   await delay(500)
 
   if (index === array.length - 1) {
+    pages = await browser.pages()
     while (pages.length > 1) {
       pages = await browser.pages()
       // console.log("Tests are still running, don't shut down...")

@@ -46,7 +46,7 @@ export const testName = new URL(import.meta.url).pathname
   .replace(/\.[^/.]+$/, '')
 
 export const clickHelper = async (page, element) => {
-  console.log('+ - Clicking ' + element)
+  // console.log('+ - Clicking ' + element)
   try {
     await page.waitForSelector(element)
   } catch (e) {
@@ -82,6 +82,45 @@ export async function asyncForEach (array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array)
   }
+}
+
+export const complexDLCheck = async (page, key, value) => {}
+
+export const simpleDLCheck = async (page, key, value, name = value) => {
+  //attempt to get DL up to three times
+  const getPageDL = async (attempt = 1) => {
+    if (attempt === 4) return
+    let DL = await page.evaluate(() => dataLayer)
+
+    if (!DL) {
+      await delay(1000)
+      await getPageDL(attempt + 1)
+    }
+    return DL
+  }
+
+  const pageDataLayer = await getPageDL()
+
+  if (!pageDataLayer)
+    return completedTests.push({
+      name,
+      result: 'FAIL',
+      reason: 'Could not load dataLayer (undefined)'
+    })
+
+  let result = await pageDataLayer?.find(x => x[key] == value)
+  if (!result)
+    return completedTests.push({
+      name,
+      result: 'FAIL',
+      reason: 'Could not find simple key value match.'
+    })
+
+  //key value was found, push completed test
+  return completedTests.push({
+    name,
+    result: 'PASS'
+  })
 }
 
 export const DLCheckHelper = async (page, key, value, name) => {

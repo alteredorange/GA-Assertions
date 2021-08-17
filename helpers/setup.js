@@ -95,7 +95,7 @@ export const newPage = async (browser, startUrl) => {
     })
   }
 
-  const openPage = async (timeout = 10000, attempt = 1) => {
+  const openPage = async (timeout = 13000, attempt = 1) => {
     let error
 
     if (attempt === 4) return { error: 'Too many attempts' }
