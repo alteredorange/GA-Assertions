@@ -7,7 +7,8 @@ import {
 import {
   clickHelper,
   DLCheckHelper,
-  simpleDLCheck
+  simpleDLCheck,
+  complexDLCheck
 } from '../helpers/helpers.js'
 
 const startUrl = 'https://stopandshop.com'
@@ -69,9 +70,9 @@ export const gtViewCart = async () => {
 //   await page.close()
 //   return `gtWeeklySpecialEvent Test Complete`
 // }
-// //* ======================================================================== *//
-// //*                          gt-product-detail-view                          *//
-// //* ======================================================================== *//
+//* ======================================================================== *//
+//*                          gt-product-detail-view                          *//
+//* ======================================================================== *//
 export const gtProductDetailView = async () => {
   const page = await newPage(browser, startUrl)
   //open a regular product
@@ -99,3 +100,7 @@ export const gtProductDetailView = async () => {
 // }
 
 // //* ============================= End Of Tests ============================= *//
+
+// export const deepCheck = async () => {
+//   await complexDLCheck('hi', 'gt-product-detail-view')
+// }

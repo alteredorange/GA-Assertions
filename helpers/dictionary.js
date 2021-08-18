@@ -1,55 +1,55 @@
 export const dictionary = [
   [
     {
-      key: "event",
-      value: "gt-product-detail-view"
+      testName: 'gt-product-detail-view',
+      description: 'deep check on gt-product-detail-view'
     },
     [
       {
-        description: "Make sure product ID is exactly 6 digits",
-        error: "Product ID was not formed correctly (6 numbers).",
-        dot: "ecommerce.detail.products[0].id",
-        path: ["ecommerce", "detail", "products", 0, "id"],
+        description: 'Make sure product ID is exactly 6 digits',
+        error: 'Product ID was not formed correctly (6 numbers).',
+        dot: 'ecommerce.detail.products[0].id',
+        path: ['ecommerce', 'detail', 'products', 0, 'id'],
         regex: /^[0-9]{6}$/
       },
       {
-        description: "Make sure product sustainable flag is true or false",
-        error: "Product sustainable was not true or false",
-        dot: "ecommerce.detail.products[0].sustainable",
-        path: ["ecommerce", "detail", "products", 0, "sustainable"],
+        description: 'Make sure product sustainable flag is true or false',
+        error: 'Product sustainable was not true or false',
+        dot: 'ecommerce.detail.products[0].sustainable',
+        path: ['ecommerce', 'detail', 'products', 0, 'sustainable'],
         regex: /(true|false)/
       }
     ],
     {
-      event: "gt-product-detail-view",
+      event: 'gt-product-detail-view',
       ecommerce: {
-        currencyCode: "USD",
+        currencyCode: 'USD',
         detail: {
           actionField: {
-            action: "detail"
+            action: 'detail'
           },
           products: [
             {
               id: 118590, //118590 - check if it's exactly 6 numbers  [ecommerce.detail.products[0].id]
-              category: "Produce",
-              variant: "1 EA",
-              name: "Avocados Hass",
+              category: 'Produce',
+              variant: '1 EA',
+              name: 'Not and Avacado...',
               price: 1.66,
               sustainable: false,
-              brand: "USDA Produce",
+              brand: 'USDA Produce',
               ebtEligible: true,
               dimension37: false,
-              dimension156: ["ebt"]
+              dimension156: ['ebt']
             }
           ]
         }
       },
-      "gtm.uniqueEventId": 753
+      'gtm.uniqueEventId': 753
     }
   ],
   [
     {
-      objectname: "test"
+      objectname: 'test'
     }
   ]
 ]

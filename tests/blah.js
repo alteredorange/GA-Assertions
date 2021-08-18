@@ -181,23 +181,27 @@ function findNestedObject (obj, key, value) {
 
 //I can find the object in the DL, and then run tests on it. Now I have to check each Dicitonary value
 
-dictionary.forEach(tag => {
-  if (!tag[0].key) return
-  console.log(tag[0].key)
+// dictionary.forEach(tag => {
+//   if (!tag[0].key) return
+//   console.log(tag[0].key)
 
-  let res = findNestedObject(DL, tag[0].key, tag[0].value)
-  console.log('RES')
-  console.log(res)
-})
+//   let res = findNestedObject(DL, tag[0].key, tag[0].value)
+//   console.log('RES')
+//   console.log(res)
+// })
 
-import * as tests from './SS-Tests.js/index.js'
+// import * as tests from './SS-Tests.js/index.js'
 
-// console.log(tests.gtAddToCart())
-// let thing = [...tests]
+// Object.values(tests).forEach(f => console.log(f))
 
-Object.values(tests).forEach(f => console.log(f))
+// tests.forEach(e => {
+//   consonle.log(e)
+// })
 
-tests.forEach(e => {
-  consonle.log(e)
-})
-// console.log(findNestedObject(DL, dictionary[0][0].key, dictionary[0][0].value))
+let object = dictionary[0]
+let testobj = object[2]
+
+const entries = Object.keys(testobj)
+console.log(entries)
+
+// console.log(Object.keys(testobj.flat()))

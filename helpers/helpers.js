@@ -1,6 +1,8 @@
 import { completedTests, allEvents } from './setup.js'
 import chalk from 'chalk'
 import { dictionary } from './dictionary.js'
+import _, { difference } from 'underscore'
+
 const failed = element => element.result == 'FAIL'
 const passed = element => element.result == 'PASS'
 
@@ -45,6 +47,175 @@ export const testName = new URL(import.meta.url).pathname
   .pop()
   .replace(/\.[^/.]+$/, '')
 
+const getDifferentKeys = (obj1, obj2) => {
+  const keyExists = (obj, key) => {
+    if (!obj || (typeof obj !== 'object' && !Array.isArray(obj))) {
+      return false
+    } else if (obj.hasOwnProperty(key)) {
+      return true
+    } else if (Array.isArray(obj)) {
+      for (let i = 0; i < obj.length; i++) {
+        const result = keyExists(obj[i], key)
+        if (result) {
+          return result
+        }
+      }
+    } else {
+      for (const k in obj) {
+        const result = keyExists(obj[k], key)
+        if (result) {
+          return result
+        }
+      }
+    }
+
+    return false
+  }
+
+  let obj1Keys = []
+  let obj2Keys = []
+  let tempArray = []
+  const keyPush = (obj, num) => {
+    if (obj.constructor === String) return
+    console.log('OBJECTSS COMING THROUGH')
+    console.log(obj.constructor)
+    console.log(obj)
+
+    // push all keys to array
+
+    // const sendToArray = async (obj, numb) => {
+    //   console.log('NUMBER!!')
+    //   console.log(numb)
+    // if (numb == 1) {
+    //   Object.keys(obj).forEach(key => {
+    //     // obj.map(e => {
+    //     // let key = Object.keys(e)[0]
+    //     let value = obj[key]
+
+    //     if (value.constructor !== Object) {
+    //       console.log('this key has no more levels: ' + key)
+    //       obj1Keys.push(key)
+    //       // if (grrr == 2) obj2Keys.push(key)
+    //       return true
+    //     } else if (Array.isArray(obj)) {
+    //       for (let i = 0; i < obj.length; i++) {
+    //         // obj1Keys.push(Object.keys(obj[i])[0])
+    //         console.log('array stuff:')
+    //         console.log(obj[i])
+    //         const result = keyPush(obj[i])
+    //         if (result) {
+    //           return result
+    //         }
+    //       }
+    //     } else {
+    //       for (const k in obj) {
+    //         console.log('obj stuff: ')
+    //         obj[k]
+    //         const result = keyPush(obj[k])
+    //         if (result) {
+    //           return result
+    //         }
+    //       }
+    //     }
+    //   })
+    // } else {
+    //   Object.keys(obj).forEach(key => {
+    //     // obj.map(e => {
+    //     // let key = Object.keys(e)[0]
+    //     let value = obj[key]
+
+    //     if (value.constructor !== Object) {
+    //       console.log('this key has no more levels: ' + key)
+    //       obj2Keys.push(key)
+    //       // if (grrr == 2) obj2Keys.push(key)
+    //       return true
+    //     } else if (Array.isArray(obj)) {
+    //       for (let i = 0; i < obj.length; i++) {
+    //         // obj1Keys.push(Object.keys(obj[i])[0])
+    //         console.log('array stuff:')
+    //         console.log(obj[i])
+    //         const result = keyPush(obj[i])
+    //         if (result) {
+    //           return result
+    //         }
+    //       }
+    //     } else {
+    //       for (const k in obj) {
+    //         console.log('obj stuff: ')
+    //         obj[k]
+    //         const result = keyPush(obj[k])
+    //         if (result) {
+    //           return result
+    //         }
+    //       }
+    //     }
+    //   })
+    // }
+    // }
+
+    // sendToArray(obj, num)
+    Object.keys(obj).forEach(key => {
+      // obj.map(e => {
+      // let key = Object.keys(e)[0]
+      let value = obj[key]
+
+      if (value.constructor !== Object) {
+        console.log('this key has no more levels: ' + key)
+        // console.log(grrr)
+        tempArray.push(key)
+        // if (grrr == 2) obj2Keys.push(key)
+        return true
+      } else if (Array.isArray(obj)) {
+        for (let i = 0; i < obj.length; i++) {
+          // obj1Keys.push(Object.keys(obj[i])[0])
+          console.log('array stuff:')
+          console.log(obj[i])
+          const result = keyPush(obj[i])
+          if (result) {
+            return result
+          }
+        }
+      } else {
+        for (const k in obj) {
+          console.log('obj stuff: ')
+          obj[k]
+          const result = keyPush(obj[k])
+          if (result) {
+            return result
+          }
+        }
+      }
+    })
+  }
+
+  keyPush(obj1, 1)
+  obj1Keys = tempArray
+  tempArray = []
+  keyPush(obj2, 2)
+  obj2Keys = tempArray
+  tempArray = []
+
+  let difference = obj1Keys.filter(x => !obj2Keys.includes(x))
+
+  console.log('OBJECT ONE KEYS: ')
+  console.log(obj1Keys)
+  console.log('OBJECT TWO KEYS: ')
+  console.log(obj2Keys)
+  console.log('DIFF LENGTH:')
+  console.log(difference)
+  console.log(difference.length)
+}
+
+const keyDifference = (obj1, obj2) => {
+  let keyFound = false
+  Object.keys(obj1).forEach(key => {
+    if (obj1[key] !== obj2[key]) {
+      return (keyFound = key)
+    }
+  })
+  return keyFound || -1
+}
+
 export const clickHelper = async (page, element) => {
   // console.log('+ - Clicking ' + element)
   try {
@@ -84,9 +255,19 @@ export async function asyncForEach (array, callback) {
   }
 }
 
-export const complexDLCheck = async (page, key, value) => {}
+const regexCheck = async () => {
+  if (item.hasOwnProperty(step.test.match.key)) {
+    const regex = new RegExp(step.test.match.value)
 
-export const simpleDLCheck = async (page, key, value, name = value) => {
+    if (item[step.test.match.key].match(regex) != null) {
+      return true
+    }
+  } else {
+    return false
+  }
+}
+
+const getPageDataLayer = async (page, name) => {
   //attempt to get DL up to three times
   const getPageDL = async (attempt = 1) => {
     if (attempt === 4) return
@@ -102,11 +283,115 @@ export const simpleDLCheck = async (page, key, value, name = value) => {
   const pageDataLayer = await getPageDL()
 
   if (!pageDataLayer)
-    return completedTests.push({
-      name,
-      result: 'FAIL',
-      reason: 'Could not load dataLayer (undefined)'
-    })
+    return (
+      completedTests.push({
+        name,
+        result: 'FAIL',
+        reason: 'Could not load dataLayer (undefined)'
+      }),
+      { error: 'Could not load dataLayer (undefined)' }
+    )
+
+  return pageDataLayer
+}
+
+const deepSameKeys = (o1, o2) => {
+  // Both nulls = yes
+  if (o1 === null && o2 === null) {
+    return true
+  }
+  // Get the keys of each object
+  const o1keys = o1 === null ? [] : Object.keys(o1)
+  const o2keys = o2 === null ? [] : Object.keys(o2)
+  if (o1keys.length !== o2keys.length) {
+    // Different number of own properties = not the same
+    return false
+  }
+
+  // At this point, one of two things is true:
+  // A) `o1` and `o2` are both `!null`, or
+  // B) One of them is `null` and the other has own "own" properties
+  // The logic below relies on the fact we only try to use `o1` or
+  // `o2` if there's at least one entry in `o1keys`, which we won't
+  // given the guarantee above.
+
+  // Handy utility function
+  const hasOwn = Object.prototype.hasOwnProperty
+
+  // Check that the keys match and recurse into nested objects as necessary
+  return o1keys.every(key => {
+    if (!hasOwn.call(o2, key)) {
+      // Different keys
+      return false
+    }
+    // Get the values and their types
+    const v1 = o1[key]
+    const v2 = o2[key]
+    const t1 = typeof v1
+    const t2 = typeof v2
+    if (t1 === 'object') {
+      if (t2 === 'object' && !deepSameKeys(v1, v2)) {
+        console.log(t2)
+        return false
+      }
+    }
+    if (t2 === 'object') {
+      if (t1 === 'object' && !deepSameKeys(v1, v2)) {
+        console.log(t1)
+
+        return false
+      }
+    }
+    return true
+  })
+}
+
+export const complexDLCheck = async (page, testName) => {
+  let i = dictionary.findIndex(e => e[0].testName == testName)
+  let testData = dictionary[i]
+  let regexTests = testData[1]
+  let testObject = testData[2]
+  let key = Object.keys(testObject)[0]
+  let value = Object.values(testObject)[0]
+
+  const pageDataLayer = await getPageDataLayer(page, testName)
+  if (pageDataLayer?.error) return
+
+  let eventIndex = await pageDataLayer.findIndex(e => e[key] == value)
+  const eventDetails = await pageDataLayer[eventIndex]
+
+  console.log('Parity Check:')
+  console.log(deepSameKeys(eventDetails, testObject))
+  console.log('DIF CHECK: ')
+  console.log(diff(testObject, eventDetails))
+
+  console.log('difference: ')
+  // console.log(_.difference(testObject, eventDetails))
+  console.log(getDifferentKeys(eventDetails, testObject))
+
+  console.log(
+    Object.keys(eventDetails).filter(x => !Object.keys(testObject).includes(x))
+  )
+
+  const results = Object.keys(eventDetails).filter(
+    ({ value: id1 }) =>
+      !Object.keys(testObject).some(({ value: id2 }) => id2 === id1)
+  )
+  console.log('REsults:')
+  console.log(results)
+
+  // console.log(eventDetails.filter(x => !testObject.includes(x)))
+  regexTests.forEach(test => {
+    // console.log(test.description)
+  })
+  // console.log(testData[0]) //test name
+  // console.log(testData[1]) //test regex
+  // console.log(testData[2]) //test parity
+}
+
+export const simpleDLCheck = async (page, key, value, name = value) => {
+  const pageDataLayer = await getPageDataLayer(page, name)
+  if (pageDataLayer?.error) return
 
   let result = await pageDataLayer?.find(x => x[key] == value)
   if (!result)
@@ -205,6 +490,7 @@ export const DLCheckHelper = async (page, key, value, name) => {
         return false
       }
     }
+
     let eventDetails
 
     const DLCheck = async (attempt = 1) => {

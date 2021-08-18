@@ -10,6 +10,7 @@ specifiers:
   sleep-promise: ^9.1.0
   uid: ^2.0.0
   ulid: ^2.3.0
+  underscore: ^1.13.1
 
 dependencies:
   chalk: 4.1.2
@@ -21,6 +22,7 @@ dependencies:
   sleep-promise: 9.1.0
   uid: 2.0.0
   ulid: 2.3.0
+  underscore: 1.13.1
 
 packages:
 
@@ -806,6 +808,10 @@ packages:
     dependencies:
       buffer: 5.7.1
       through: 2.3.8
+    dev: false
+
+  /underscore/1.13.1:
+    resolution: {integrity: sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==}
     dev: false
 
   /universalify/2.0.0:
