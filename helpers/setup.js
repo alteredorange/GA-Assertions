@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer-extra'
 import chalk from 'chalk'
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+// import { completedTests } from '../helpers/setup.js'
 
 puppeteer.use(StealthPlugin())
 
@@ -46,7 +47,7 @@ export const initialize = async startUrl => {
   return browser
 }
 
-export const newPage = async (browser, startUrl) => {
+export const newPage = async (browser, startUrl, testName) => {
   const context = await browser.createIncognitoBrowserContext()
   // Open new page in browser for the test to run
   const page = await context.newPage()
@@ -98,17 +99,17 @@ export const newPage = async (browser, startUrl) => {
   const openPage = async (timeout = 13000, attempt = 1) => {
     let error
 
-    if (attempt === 4) return { error: 'Too many attempts' }
+    if (attempt === 4) return await page.close(), { error: 'Too many attempts' }
 
     try {
       await page.goto(startUrl, { waitUntil: 'networkidle2', timeout })
     } catch (e) {
       error = e
       if (e?.name === 'TimeoutError') {
-        console.log('Page failed to load under ' + timeout / 1000 + ' seconds.')
+        // console.log('Page failed to load under ' + timeout / 1000 + ' seconds.')
         // return { error: e?.name }
       } else {
-        console.log('Page failed to load: ' + e)
+        // console.log('Page failed to load: ' + e)
         // return { error: e?.name }
       }
     }
@@ -121,7 +122,15 @@ export const newPage = async (browser, startUrl) => {
 
   const potentialError = await openPage()
 
-  if (potentialError?.error) return console.log(potentialError.error)
+  if (potentialError?.error)
+    return (
+      completedTests.push({
+        name: testName,
+        result: 'FAIL',
+        reason: 'Page failed to load.'
+      }),
+      potentialError
+    )
 
   // try {
   //   await page.goto(startUrl, { waitUntil: 'networkidle2', timeout: 11000 })
@@ -139,15 +148,15 @@ export const newPage = async (browser, startUrl) => {
   //     console.log('navigation failed.')
   //   }
   // }
-  console.log('page loaded!')
+  // console.log('page loaded!')
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: '*initialLoad.png' })
+  // await page.screenshot({ path: '*initialLoad.png' })
   await page.mouse.wheel({ deltaY: 2000 })
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: '*afterScroll.png' })
+  // await page.screenshot({ path: '*afterScroll.png' })
   await page.mouse.wheel({ deltaY: 2000 })
   await page.waitForTimeout(1000)
-  await page.screenshot({ path: '*afterScroll2.png' })
+  // await page.screenshot({ path: '*afterScroll2.png' })
 
   return page
 }

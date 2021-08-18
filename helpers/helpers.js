@@ -47,6 +47,22 @@ export const testName = new URL(import.meta.url).pathname
   .pop()
   .replace(/\.[^/.]+$/, '')
 
+function indexer (obj, is, value) {
+  if (/\[/.test(is))
+    return indexer(
+      obj,
+      is
+        .replace(/]/g, '')
+        .replace(/\[/g, '.')
+        .split('.'),
+      value
+    )
+  if (typeof is == 'string') return indexer(obj, is.split('.'), value)
+  else if (is.length == 1 && value !== undefined) return (obj[is[0]] = value)
+  else if (is.length == 0) return obj
+  else return indexer(obj[is[0]], is.slice(1), value)
+}
+
 const getDifferentKeys = (obj1, obj2) => {
   const keyExists = (obj, key) => {
     if (!obj || (typeof obj !== 'object' && !Array.isArray(obj))) {
@@ -75,101 +91,19 @@ const getDifferentKeys = (obj1, obj2) => {
   let obj1Keys = []
   let obj2Keys = []
   let tempArray = []
-  const keyPush = (obj, num) => {
-    if (obj.constructor === String) return
-    console.log('OBJECTSS COMING THROUGH')
-    console.log(obj.constructor)
-    console.log(obj)
+  const keyPush = obj => {
+    //don't let indivial strings through
+    if (obj?.constructor === String) return
 
-    // push all keys to array
-
-    // const sendToArray = async (obj, numb) => {
-    //   console.log('NUMBER!!')
-    //   console.log(numb)
-    // if (numb == 1) {
-    //   Object.keys(obj).forEach(key => {
-    //     // obj.map(e => {
-    //     // let key = Object.keys(e)[0]
-    //     let value = obj[key]
-
-    //     if (value.constructor !== Object) {
-    //       console.log('this key has no more levels: ' + key)
-    //       obj1Keys.push(key)
-    //       // if (grrr == 2) obj2Keys.push(key)
-    //       return true
-    //     } else if (Array.isArray(obj)) {
-    //       for (let i = 0; i < obj.length; i++) {
-    //         // obj1Keys.push(Object.keys(obj[i])[0])
-    //         console.log('array stuff:')
-    //         console.log(obj[i])
-    //         const result = keyPush(obj[i])
-    //         if (result) {
-    //           return result
-    //         }
-    //       }
-    //     } else {
-    //       for (const k in obj) {
-    //         console.log('obj stuff: ')
-    //         obj[k]
-    //         const result = keyPush(obj[k])
-    //         if (result) {
-    //           return result
-    //         }
-    //       }
-    //     }
-    //   })
-    // } else {
-    //   Object.keys(obj).forEach(key => {
-    //     // obj.map(e => {
-    //     // let key = Object.keys(e)[0]
-    //     let value = obj[key]
-
-    //     if (value.constructor !== Object) {
-    //       console.log('this key has no more levels: ' + key)
-    //       obj2Keys.push(key)
-    //       // if (grrr == 2) obj2Keys.push(key)
-    //       return true
-    //     } else if (Array.isArray(obj)) {
-    //       for (let i = 0; i < obj.length; i++) {
-    //         // obj1Keys.push(Object.keys(obj[i])[0])
-    //         console.log('array stuff:')
-    //         console.log(obj[i])
-    //         const result = keyPush(obj[i])
-    //         if (result) {
-    //           return result
-    //         }
-    //       }
-    //     } else {
-    //       for (const k in obj) {
-    //         console.log('obj stuff: ')
-    //         obj[k]
-    //         const result = keyPush(obj[k])
-    //         if (result) {
-    //           return result
-    //         }
-    //       }
-    //     }
-    //   })
-    // }
-    // }
-
-    // sendToArray(obj, num)
     Object.keys(obj).forEach(key => {
-      // obj.map(e => {
-      // let key = Object.keys(e)[0]
       let value = obj[key]
 
       if (value.constructor !== Object) {
-        console.log('this key has no more levels: ' + key)
-        // console.log(grrr)
+        //item has no more levels, push it to array
         tempArray.push(key)
-        // if (grrr == 2) obj2Keys.push(key)
         return true
       } else if (Array.isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
-          // obj1Keys.push(Object.keys(obj[i])[0])
-          console.log('array stuff:')
-          console.log(obj[i])
           const result = keyPush(obj[i])
           if (result) {
             return result
@@ -177,8 +111,6 @@ const getDifferentKeys = (obj1, obj2) => {
         }
       } else {
         for (const k in obj) {
-          console.log('obj stuff: ')
-          obj[k]
           const result = keyPush(obj[k])
           if (result) {
             return result
@@ -188,22 +120,38 @@ const getDifferentKeys = (obj1, obj2) => {
     })
   }
 
-  keyPush(obj1, 1)
+  keyPush(obj1)
   obj1Keys = tempArray
   tempArray = []
-  keyPush(obj2, 2)
+  keyPush(obj2)
   obj2Keys = tempArray
   tempArray = []
 
-  let difference = obj1Keys.filter(x => !obj2Keys.includes(x))
+  let dictionaryMissing = obj1Keys.filter(x => !obj2Keys.includes(x)) //dictionary is missing these items
+  let siteMissing = obj2Keys.filter(x => !obj1Keys.includes(x)) //siteObject is mission these items
 
-  console.log('OBJECT ONE KEYS: ')
-  console.log(obj1Keys)
-  console.log('OBJECT TWO KEYS: ')
-  console.log(obj2Keys)
-  console.log('DIFF LENGTH:')
-  console.log(difference)
-  console.log(difference.length)
+  let totalMissing = dictionaryMissing.length + siteMissing.length
+
+  console.log('TOTAL MISSING')
+  console.log(totalMissing)
+
+  let difference = { siteMissing, dictionaryMissing }
+
+  // console.log('SITE FIRST')
+
+  // console.log(siteFirst)
+  // console.log('dictionary first')
+  // console.log(dictionaryFirst)
+  // console.log('OBJECT ONE KEYS: ')
+  // console.log(obj1Keys)
+  // console.log('OBJECT TWO KEYS: ')
+  // console.log(obj2Keys)
+  // console.log('DIFFerence:')
+  // console.log(difference)
+  // console.log(difference.length)
+
+  if (totalMissing > 0) return difference
+  return 0
 }
 
 const keyDifference = (obj1, obj2) => {
@@ -350,39 +298,90 @@ export const complexDLCheck = async (page, testName) => {
   let i = dictionary.findIndex(e => e[0].testName == testName)
   let testData = dictionary[i]
   let regexTests = testData[1]
-  let testObject = testData[2]
-  let key = Object.keys(testObject)[0]
-  let value = Object.values(testObject)[0]
+  let dictionaryObject = testData[2]
+  let key = Object.keys(dictionaryObject)[0]
+  let value = Object.values(dictionaryObject)[0]
 
   const pageDataLayer = await getPageDataLayer(page, testName)
   if (pageDataLayer?.error) return
 
   let eventIndex = await pageDataLayer.findIndex(e => e[key] == value)
-  const eventDetails = await pageDataLayer[eventIndex]
+  const siteObject = await pageDataLayer[eventIndex]
 
-  console.log('Parity Check:')
-  console.log(deepSameKeys(eventDetails, testObject))
-  console.log('DIF CHECK: ')
-  console.log(diff(testObject, eventDetails))
+  // console.log('Parity Check:')
+  // console.log(deepSameKeys(siteObject, dictionaryObject))
+  // console.log('DIF CHECK: ')
+  // console.log(diff(dictionaryObject, siteObject))
 
   console.log('difference: ')
-  // console.log(_.difference(testObject, eventDetails))
-  console.log(getDifferentKeys(eventDetails, testObject))
+  let difference = await getDifferentKeys(siteObject, dictionaryObject)
 
-  console.log(
-    Object.keys(eventDetails).filter(x => !Object.keys(testObject).includes(x))
-  )
+  let differenceFailed = difference == 0 ? false : true
+  // if (difference === 0) return
+  // console.log(difference)
+  // console.log(_.difference(dictionaryObject, siteObject))
+  // console.log(getDifferentKeys(siteObject, dictionaryObject))
 
-  const results = Object.keys(eventDetails).filter(
-    ({ value: id1 }) =>
-      !Object.keys(testObject).some(({ value: id2 }) => id2 === id1)
-  )
-  console.log('REsults:')
-  console.log(results)
+  // console.log(
+  //   Object.keys(siteObject).filter(x => !Object.keys(dictionaryObject).includes(x))
+  // )
 
-  // console.log(eventDetails.filter(x => !testObject.includes(x)))
-  regexTests.forEach(test => {
-    // console.log(test.description)
+  // const results = Object.keys(siteObject).filter(
+  //   ({ value: id1 }) =>
+  // //      !Object.keys(dictionaryObject).some(({ value: id2 }) => id2 === id1)
+  // )
+  // console.log('REsults:')
+  // console.log(results)
+
+  // console.log(siteObject.filter(x => !dictionaryObject.includes(x)))
+  let regexResults = []
+
+  await regexTests.forEach(test => {
+    let valueToCheck = indexer(siteObject, test.dot)
+    let regex = test.regex
+
+    let result = regex.test(valueToCheck)
+
+    regexResults.push({ title: test.title, passed: result })
+    // console.log(indexer(dictionary[0][2], 'ecommerce.detail.products[0].animal'))
+  })
+
+  //if any regextests failed to pass, then we didn't pass
+  let RegexFailed = regexResults.some(e => e.passed == false)
+
+  let failedRegexTests
+  if (RegexFailed == true)
+    failedRegexTests = regexResults.filter(e => e.passed == false)
+
+  if (RegexFailed && differenceFailed)
+    return completedTests.push({
+      name: testName,
+      result: 'FAIL',
+      reason: 'Both Regex and Difference checks failed.',
+      details: { regexResults, difference },
+      detailsString: {
+        regex: JSON.stringify(failedRegexTests),
+        difference: JSON.stringify(difference)
+      }
+    })
+
+  if (RegexFailed || differenceFailed) {
+    let whichFailed = RegexFailed ? 'REGEX' : 'DIFFERENCE'
+    return completedTests.push({
+      name: testName,
+      result: 'FAIL',
+      reason: 'The ' + whichFailed + ' check failed.',
+      details: { regexResults, difference },
+      detailsString: {
+        regex: JSON.stringify(failedRegexTests),
+        difference: JSON.stringify(difference)
+      }
+    })
+  }
+
+  return completedTests.push({
+    name: testName,
+    result: 'PASS'
   })
   // console.log(testData[0]) //test name
   // console.log(testData[1]) //test regex

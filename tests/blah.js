@@ -157,7 +157,7 @@ let fixed = stringer
 console.log(fixed)
 // console.log(fixed.split(".").reduce(indexer, obj))
 console.log(indexer(obj, fixed))
-console.log(indexer(dictionary[0][2], 'ecommerce.detail.products[0].price'))
+console.log(indexer(dictionary[0][2], 'ecommerce.detail.products[0].animal'))
 
 function findNestedObject (obj, key, value) {
   // Base case
