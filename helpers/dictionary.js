@@ -11,8 +11,8 @@ export const dictionary = [
         error: 'Product ID was not formed correctly (6 numbers).',
         dot: 'ecommerce.detail.products[0].id',
         path: ['ecommerce', 'detail', 'products', 0, 'id'],
-        regex: /^[0-9]{7}$/ //will fail
-        // regex: /^[0-9]{7}$/ //will pass
+        regex: /^[0-9]{7}$/ //will fail (id shouldn't have 7 numbers)
+        // regex: /^[0-9]{6}$/ //will pass (id should have 6 numbers)
       },
       {
         title: 'Sustainable flag check',
@@ -41,7 +41,7 @@ export const dictionary = [
               sustainable: false,
               // brand: 'USDA Produce',
               ebtEligible: true,
-              animal: 'cow',
+              animal: 'pig', //added to show differences
               dimension37: false,
               dimension156: ['ebt']
             }

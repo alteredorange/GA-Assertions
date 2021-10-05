@@ -23,7 +23,6 @@ export const gtViewCart = async () => {
   if (page?.error) return
   //open empty shopping cart
   await clickHelper(page, '.cart-button-content')
-  // await DLCheckHelper(page, 'event', 'gt-view-cart')
   await simpleDLCheck(page, 'event', 'gt-view-cart')
   //close empty shopping cart
   await clickHelper(page, 'div.modal_footer > div > div > footer > button')
@@ -39,7 +38,9 @@ export const gtAddToCart = async () => {
 
   //add an item to cart
   await clickHelper(page, 'button.button--add-to-cart')
-  await DLCheckHelper(page, 'event', 'gt-add-to-cart') //? TODo: Not working on simple check...
+  //wait for loading to cart
+  await page.waitForTimeout(2000)
+  await simpleDLCheck(page, 'event', 'gt-add-to-cart')
   await page.close()
 }
 
@@ -86,7 +87,6 @@ export const gtProductDetailView = async () => {
   //open a regular product
   await clickHelper(page, 'div.product-tile_content')
   await complexDLCheck(page, 'gt-product-detail-view')
-  // await DLCheckHelper(page, 'event', 'gt-product-detail-view')
   //close the item detail's modal
   await clickHelper(
     page,

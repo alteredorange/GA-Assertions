@@ -94,6 +94,8 @@ const getDifferentKeys = (obj1, obj2) => {
   const keyPush = obj => {
     //don't let indivial strings through
     if (obj?.constructor === String) return
+    //don't let undefined or null objects through
+    if (!obj) return
 
     Object.keys(obj).forEach(key => {
       let value = obj[key]
@@ -337,6 +339,8 @@ export const complexDLCheck = async (page, testName) => {
   let regexResults = []
 
   await regexTests.forEach(test => {
+    if (!siteObject)
+      return regexResults.push({ title: test.title, passed: 'FAILED' })
     let valueToCheck = indexer(siteObject, test.dot)
     let regex = test.regex
 
@@ -392,7 +396,10 @@ export const simpleDLCheck = async (page, key, value, name = value) => {
   const pageDataLayer = await getPageDataLayer(page, name)
   if (pageDataLayer?.error) return
 
+  // console.log(pageDataLayer)
+
   let result = await pageDataLayer?.find(x => x[key] == value)
+
   if (!result)
     return completedTests.push({
       name,
