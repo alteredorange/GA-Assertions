@@ -17,4 +17,4 @@ Some events would obviously be more comple, i.e. `gt-order-placed` would require
 
 `helpers/setup.js` - Contains the Puppeteer setup details
 
-'tests/SS-Runner.js` - Runs all the tests exported from `tests/SS-Tests.js`. Also contains some parallelization settings, which currently run 5 tests at one time.
+`tests/SS-Runner.js` - Runs all the tests exported from `tests/SS-Tests.js`. Also contains some parallelization settings, which currently run 5 tests at one time.
