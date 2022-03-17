@@ -11,7 +11,7 @@ Clone repo then `pnpm/npm install`
 `tests/SS-Tests.js` - Runs the Stop and shop tests in parallel.  Each test is it's own exported function (so it can be run by `SS-Runner.js`).
 Basically it clicks a CSS selector, and then waits for the expected GA event to fire. 
 
-Some events would obviously be more comple, i.e. `gt-order-placed` would require logging in, adding stuff to cart, and then completing the checkout process.
+Some events would obviously be more complex, i.e. `gt-order-placed` would require logging in, adding stuff to cart, and then completing the checkout process.
 
 `helpers/helpers.js` - Contains the two testing funcitons `simpleDLCheck` and `complexDLCheck`. The script is checking the page dataLayer for the expected event. `complexDLCheck` can also check key/value pairs or regex tests from a dictionary file (`helpers/dicitonary.js`). Also contians `parseResults` which is how the results are deisplayed after all tests are completed.
 
