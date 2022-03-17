@@ -13,8 +13,8 @@ Basically it clicks a CSS selector, and then waits for the expected GA event to 
 
 Some events would obviously be more complex, i.e. `gt-order-placed` would require logging in, adding stuff to cart, and then completing the checkout process.
 
-`helpers/helpers.js` - Contains the two testing funcitons `simpleDLCheck` and `complexDLCheck`. The script is checking the page dataLayer for the expected event. `complexDLCheck` can also check key/value pairs or regex tests from a dictionary file (`helpers/dicitonary.js`). Also contians `parseResults` which is how the results are deisplayed after all tests are completed.
+`helpers/helpers.js` - Contains the two testing functions `simpleDLCheck` and `complexDLCheck`. The script is checking the page dataLayer for the expected event. `complexDLCheck` can also check key/value pairs or regex tests from a dictionary file (`helpers/dicitonary.js`). Also contains `parseResults` which is how the results are displayed after all tests are completed.
 
 `helpers/setup.js` - Contains the Puppeteer setup details
 
-`tests/SS-Runner.js` - Runs all the tests exported from `tests/SS-Tests.js`. Also contains some parallelization settings, which currently run 5 tests at one time.
+`tests/SS-Runner.js` - Runs all the tests exported from `tests/SS-Tests.js`. Also contains some parallelization settings, which currently runs 5 tests at one time.
